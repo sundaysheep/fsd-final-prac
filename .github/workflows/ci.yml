@@ -1,0 +1,38 @@
+name: Library CI/CD Pipeline
+
+# Run this workflow every time code is pushed or a PR is opened to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # JOB 1: Test the Python Backend
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Build Backend Docker Image
+        working-directory: ./backend
+        run: docker build -t library-backend .
+        
+      - name: Run Pytest inside Docker
+        # This overrides the default CMD in the Dockerfile to run tests instead
+        run: docker run library-backend pytest
+
+  # JOB 2: Test the React Frontend
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Build Frontend Docker Image
+        working-directory: ./frontend
+        run: docker build -t library-frontend .
+        
+      - name: Run Vitest inside Docker
+        run: docker run library-frontend npm test
