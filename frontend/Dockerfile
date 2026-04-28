@@ -1,5 +1,5 @@
 # Use a lightweight Node image
-FROM node:18-alpine
+FROM node:20-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
